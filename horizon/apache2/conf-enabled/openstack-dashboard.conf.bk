@@ -1,0 +1,25 @@
+Listen 80
+
+<VirtualHost *:80 >
+    LogLevel debug
+    ErrorLog /var/log/apache2/horizon.log
+    CustomLog /var/log/apache2/horizon_access.log combined
+
+    WSGIScriptAlias /horizon /usr/share/openstack-dashboard/openstack_dashboard/wsgi/django.wsgi process-group=horizon
+    WSGIDaemonProcess horizon user=www-data group=www-data processes=3 threads=10 display-name=%{GROUP}
+    WSGIProcessGroup horizon
+    WSGIApplicationGroup %{GLOBAL}
+
+    Alias /static /var/lib/openstack-dashboard/static/
+    Alias /horizon/static /var/lib/openstack-dashboard/static/
+
+    <Directory /usr/share/openstack-dashboard/openstack_dashboard/wsgi>
+      Require all granted
+    </Directory>
+
+    <Directory /var/lib/openstack-dashboard/static>
+      Require all granted
+    </Directory>
+</VirtualHost>
+
+
